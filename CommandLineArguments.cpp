@@ -1,19 +1,17 @@
 #include <iostream>
 #include "clara.hpp"
-using namespace std;
+#include <string>
+using namespace clara;
 
-// argc is counter for the arguments, including the application-name.
-// argv is array of strings representing the arguments.
 int main(int argc, char **argv)
 {
-    int width = 0;
-    auto ignore =1;
     
-    using namespace clara;
-    auto parser = Opt(width, "width")
-                   ["-w"]["--width"]("How wide should it be?") |
-               Opt(ignore, "ignore")
-                   ["-i"]["--ignore"]("Ignore conflicts") ;
+    auto source  = std::string{};
+    auto destination = std::string{};
+
+    
+    auto parser = Arg(source, "source")("The path of the source file") |
+                  Arg(destination, "destination")("The path to the output file") ;
 
     auto result = parser.parse(Args(argc, argv));
       if (!result)
@@ -21,8 +19,12 @@ int main(int argc, char **argv)
          std::cerr << "Error in command line: " << result.errorMessage() << std::endl;
          return 1;
       }
+      else 
+      {
+         std::cout <<
+            "source:    " << source << std::endl <<
+            "destination:      " << destination  << std::endl;
+      }
 
-  
-    cout << width << endl;
-    cout << ignore <<endl;
+ 
 }
