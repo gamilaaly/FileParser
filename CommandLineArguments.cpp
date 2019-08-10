@@ -6,11 +6,13 @@ using namespace clara;
 int main(int argc, char **argv)
 {
     
-    auto source  = std::string{};
+    auto source1  = std::string{};
+    auto source2 =std::string{};
     auto destination = std::string{};
 
     
-    auto parser = Arg(source, "source")("The path of the source file") |
+    auto parser = Arg(source1, "source")("The path of the source file") |
+                  Arg(source2, "source")("The path of the source file") |
                   Arg(destination, "destination")("The path to the output file") ;
 
     auto result = parser.parse(Args(argc, argv));
@@ -22,7 +24,8 @@ int main(int argc, char **argv)
       else 
       {
          std::cout <<
-            "source:    " << source << std::endl <<
+            "source1:    " << source1 << std::endl <<
+            "source2:    " << source2 << std::endl <<
             "destination:      " << destination  << std::endl;
       }
 
