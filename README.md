@@ -7,4 +7,5 @@
    - One of the following operations ("plus" - "minus" - "multiply" - "divide")
    - Directory of the second text file
    - Separate each argument with a single space
+   - ./FileParser <first_file_directory> <operation> <second_file_directory>
 - Output will be in the same file directory as (results.txt)
