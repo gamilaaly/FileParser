@@ -3,8 +3,8 @@
 - Note: Don't switch the order of the arguments as they are stored in variables in this order.
 ## Using FileParser
 - Arguments required are:
-    Directory of the first text file (ex: /home/user/directory/txtfile.txt)
-    One of the following operations ("plus" - "minus" - "multiply" - "divide")
-    Directory of the second text file
-    Separate each argument with a single space
+   - Directory of the first text file (ex: /home/user/directory/txtfile.txt)
+   - One of the following operations ("plus" - "minus" - "multiply" - "divide")
+   - Directory of the second text file
+   - Separate each argument with a single space
 - Output will be in the same file directory as (results.txt)
