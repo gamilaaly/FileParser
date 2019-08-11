@@ -50,7 +50,20 @@ int main(int argc, char *argv[])
                         vegovego.pop_back();
                         vegovego.push_back(s);
                         s = " ";
+
+                     buffer = line1[i-2];
+                    //cout << "buffer"<<buffer<<endl;
+                    if (buffer == '1' || buffer == '2' || buffer == '0' || buffer == '3' || buffer == '4' || buffer == '5' || buffer == '6' || buffer == '7' || buffer == '8' || buffer == '9')
+                    {
+                        s += buffer;
+                        s += vegovego.back();
+                        vegovego.erase(vegovego.end()-1);
+                        vegovego.pop_back();
+                        vegovego.push_back(s);
+                        s = " ";
                     }
+                    }
+                    
                 }
             }
         }
