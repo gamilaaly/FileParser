@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <fmt/format.h>
 using namespace std;
 int main(int argc, char *argv[])
 {
@@ -50,7 +51,20 @@ int main(int argc, char *argv[])
                         vegovego.pop_back();
                         vegovego.push_back(s);
                         s = " ";
+
+                     buffer = line1[i-2];
+                    //cout << "buffer"<<buffer<<endl;
+                    if (buffer == '1' || buffer == '2' || buffer == '0' || buffer == '3' || buffer == '4' || buffer == '5' || buffer == '6' || buffer == '7' || buffer == '8' || buffer == '9')
+                    {
+                        s += buffer;
+                        s += vegovego.back();
+                        vegovego.erase(vegovego.end()-1);
+                        vegovego.pop_back();
+                        vegovego.push_back(s);
+                        s = " ";
                     }
+                    }
+                    
                 }
             }
         }
@@ -61,7 +75,8 @@ int main(int argc, char *argv[])
     }*/
     for (int i = 0; i <= vegovego.size(); i++)
     {
-        cout << vegovego[i] << endl;
+        fmt::print("output {}\n",vegovego[i]); 
+        //cout << vegovego[i] << endl;
     }
 
     if (infile.fail())
