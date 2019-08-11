@@ -6,6 +6,7 @@
    - Directory of the first text file (ex: /home/user/directory/txtfile.txt)
    - One of the following operations ("plus" - "minus" - "multiply" - "divide")
    - Directory of the second text file
+   - Delimiter if any exists
    - Separate each argument with a single space
-   - `./FileParser <first_file_directory> <operation> <second_file_directory>`
+   - ex. `./FileParser <first_file_directory> <operation> <second_file_directory> <delimiter>`
 - Output will be in the same file directory as (results.txt)

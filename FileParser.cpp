@@ -3,6 +3,8 @@
 // THIS ALGORITHM TAKES 2 DIRECTORIES AND AN OPERATION FROM THE TERMINAL, READS INTEGERS IN THESE FILES, PERFORM OPERATION ON BOTH OF THEM
 // AND RETURNS THE RESULTS IN AN EXTERNAL TXT FILE.
 // EXECUTION TIME IS CALCULATED AND PRINTED INTO TERMINAL.
+// EDIT::
+// NOW ADDED AN OPTION TO ADD THE DELIMITER THROUGH THE TERMINAL ARGUMENTS TO PARSE ALL KINDS OF DELIMITERS
 // Author: As'ad
 
 
@@ -13,6 +15,7 @@
 #include "clara.hpp"
 #include <algorithm> 
 #include <chrono>
+#include <sstream>
 
 using namespace clara;
 using namespace std::chrono;
@@ -20,6 +23,7 @@ using namespace std::chrono;
 
 
 std::vector<int> retrieveIntegers(std::string directory);
+std::vector<int> retrieveIntegers(std::string directory,char delimiter);
 std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std::string operation);
 std::vector<int> sum(std::vector<int> array1,std::vector<int> array2);
 std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2);
@@ -35,18 +39,20 @@ int main (int argc, char **argv){
     auto dir1 = std::string{};
     auto dir2 = std::string{};
     auto oper = std::string{};
+    char delim = ' ';
     auto parser = Arg(dir1, "dir1")("The path of the first file") |
                   Arg(oper,"oper")("The operator") |
-                  Arg(dir2, "dir2")("The path to the second file");
+                  Arg(dir2, "dir2")("The path to the second file") |
+                  Arg(delim, "delimiter")("Delimiter if exists");
+
 
     auto result = parser.parse(Args(argc, argv));
-      if (!result)
-      {
+      if (!result){
          std::cerr << "Error in command line: " << result.errorMessage() << std::endl;
          return 1;
       }
-      else 
-      {
+      else {
+        if (delim == ' '){
         arry1 = retrieveIntegers(dir1);
         arry2 = retrieveIntegers(dir2);
         // Get starting point exact time
@@ -59,33 +65,86 @@ int main (int argc, char **argv){
         if(VALID_OPERATION) {
             streamOut(results);
             std::cout << "Execution time: " << duration.count() << "ms" << "\n";
-        }
+            }
         
+        } else {
+
+        arry1 = retrieveIntegers(dir1,delim);
+        arry2 = retrieveIntegers(dir2,delim);
+
+        // Get starting point exact time
+        auto start = high_resolution_clock::now();
+        results = operation(arry1,arry2,oper);
+        // End point exact time
+        auto stop = high_resolution_clock::now();
+        // Calculate duration
+        auto duration = duration_cast<microseconds>(stop - start);
+        if(VALID_OPERATION) {
+            streamOut(results);
+            std::cout << "Execution time: " << duration.count() << "ms" << "\n";
+            }
+
+        }
       }
 
     return 0;
 }
 
 
-// the function takes a directory, parses through the txt file, and store integers in a vector
+// The function takes a directory, parses through the txt file, and returns a vector containing the integers
+
 
 std::vector<int> retrieveIntegers(std::string directory){
     std::ifstream file;
     std::vector<int> arry;
-    int x;
+    int temp;
     file.open(directory);
     if (file.is_open()){
-        
-        while(file >> x){
-            arry.push_back(x);
+
+        while(file >> temp){
+            arry.push_back(temp);
         }
+
         file.close();
+
     }
+
     else {
         std::cerr << "Unable to open file " << directory << "\n";
     }
+
     return arry;
 }
+
+// This function takes a directory and a delimiter, parses through the txt file, and returns a vector containing the integers
+
+std::vector<int> retrieveIntegers(std::string directory, char delimiter){
+    std::ifstream file;
+    std::vector<std::string> arry;
+    std::vector<int> arryint;
+    std::string temp;
+    file.open(directory);
+    if (file.is_open()){
+
+         while (getline(file, temp ,delimiter)){
+            arry.push_back(temp);
+         }
+
+        file.close();
+
+    }
+
+    else {
+        std::cerr << "Unable to open file " << directory << "\n";
+    }
+    for (int i=0; i<arry.size();i++){
+        arryint.push_back(std::stoi(arry[i]));
+    }
+    return arryint;
+}
+
+
+
 
 
 // Calculation function that takes the operator and perform the operation on both files
@@ -149,6 +208,9 @@ bool toggleFlag(bool flag){
     return flag;
 }
 
+
+// The function that export the results into a .txt file called "results.txt"
+
 void streamOut(std::vector<int> results){
     std::ofstream resultFile;
     int x;
@@ -163,4 +225,6 @@ void streamOut(std::vector<int> results){
     }
 
 }
+
+
 
