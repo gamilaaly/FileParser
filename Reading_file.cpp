@@ -74,7 +74,8 @@ int main(int argc, char *argv[])
     }*/
     for (int i = 0; i <= vegovego.size(); i++)
     {
-        cout << vegovego[i] << endl;
+        fmt::print("output {}\n",vegovego[i]); 
+        //cout << vegovego[i] << endl;
     }
 
     if (infile.fail())
