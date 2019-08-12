@@ -35,8 +35,8 @@
 
 ## Clara Library 
 
-   - To install the library: 
-     - git clone <https://github.com/catchorg/Clara>
+   - To install the library and check documentation: 
+     - <https://github.com/catchorg/Clara>
 
    - To be able to include the library:
      - sudo mkdir /usr/local/include/clara
