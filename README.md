@@ -14,8 +14,9 @@
   - One of the following operations ("plus" - "minus" - "multiply" - "divide")
   - Directory of the second text file
   - Delimiter if any exists
+  - Output Directory (Leave blank to save in the program directory)
   - Separate each argument with a single space
-  - ex. `./FileParser <first_file_directory> <operation> <second_file_directory> <delimiter>`
+  - ex. `./FileParser <first_file_directory> <operation> <second_file_directory> <delimiter> <output_file_directory>`
 
 - Output will be in the same file directory as (results.txt)
 

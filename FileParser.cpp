@@ -30,7 +30,7 @@ std::vector<int> sum(std::vector<int> array1,std::vector<int> array2);
 std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2);
 std::vector<int> multi(std::vector<int> array1,std::vector<int> array2);
 std::vector<int> div(std::vector<int> array1,std::vector<int> array2);
-void streamOut(std::vector<int> results);
+void streamOut(std::vector<int> results, std::string outDir);
 bool toggleFlag(bool flag);
 bool VALID_OPERATION = false;
 
@@ -40,13 +40,16 @@ int main (int argc, char **argv){
     auto dir1 = std::string{};
     auto dir2 = std::string{};
     auto oper = std::string{};
+    auto outDir = std::string{};
+    outDir = "results.txt";
     char delim1 = ' ';
     char delim2 = ' ';
     auto parser = Arg(dir1, "dir1")("The path of the first file") |
                   Arg(oper,"oper")("The operator") |
                   Arg(dir2, "dir2")("The path to the second file") |
                   Arg(delim1, "delimiter")("Delimiter if exists")|
-                  Arg(delim2, "delimiter")("Delimiter if exists");
+                  Arg(delim2, "delimiter")("Delimiter if exists") |
+                  Arg(outDir, "output directory")("Output Directory");
 
 
     auto result = parser.parse(Args(argc, argv));
@@ -67,7 +70,7 @@ int main (int argc, char **argv){
         // Calculate duration
         auto duration = duration_cast<microseconds>(stop - start);
         if(VALID_OPERATION) {
-            streamOut(results);
+            streamOut(results,outDir);
             std::cout << "Execution time: " << duration.count() << "ms" << "\n";
             }
         }
@@ -196,10 +199,10 @@ bool toggleFlag(bool flag){
 
 // The function that export the results into a .txt file called "results.txt"
 
-void streamOut(std::vector<int> results){
+void streamOut(std::vector<int> results, std::string outDir){
     std::ofstream resultFile;
     int x;
-    resultFile.open("results.txt");
+    resultFile.open(outDir);
     if (resultFile.is_open()){
         for(int i=0; i < results.size(); i++){
             resultFile << results[i] << " ";
