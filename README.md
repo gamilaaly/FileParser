@@ -13,10 +13,10 @@
   - Directory of the first text file (ex: /home/user/directory/txtfile.txt)
   - One of the following operations ("plus" - "minus" - "multiply" - "divide")
   - Directory of the second text file
-  - Delimiter if any exists
-  - Output Directory (Leave blank to save in the program directory)
+  - Delimiter if any exists (use [-q] followed by first delimiter and [-w] followed by second delimiter)
+  - Output Directory (Leave blank to save in the program directory, use [-e] followed by export directory)
   - Separate each argument with a single space
-  - ex. `./FileParser <first_file_directory> <operation> <second_file_directory> <delimiter> <output_file_directory>`
+  - ex. `./FileParser <first_file_directory> <operation> <second_file_directory> -q <first_delimiter> -w <second_delimiter> -e <export_directory>`
 
 - Output will be in the same file directory as (results.txt)
 

@@ -47,9 +47,9 @@ int main (int argc, char **argv){
     auto parser = Arg(dir1, "dir1")("The path of the first file") |
                   Arg(oper,"oper")("The operator") |
                   Arg(dir2, "dir2")("The path to the second file") |
-                  Arg(delim1, "delimiter")("Delimiter if exists")|
-                  Arg(delim2, "delimiter")("Delimiter if exists") |
-                  Arg(outDir, "output directory")("Output Directory");
+                  Opt(delim1, "delimiter")["-q"]("Delimiter if exists")|
+                  Opt(delim2, "delimiter")["-w"]("Delimiter if exists") |
+                  Opt(outDir, "output directory")["-e"]("Output Directory");
 
 
     auto result = parser.parse(Args(argc, argv));
