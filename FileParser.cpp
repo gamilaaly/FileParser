@@ -16,6 +16,7 @@
 #include <algorithm> 
 #include <chrono>
 #include <sstream>
+#include <fmt/format.h>
 
 using namespace clara;
 using namespace std::chrono;
@@ -39,11 +40,13 @@ int main (int argc, char **argv){
     auto dir1 = std::string{};
     auto dir2 = std::string{};
     auto oper = std::string{};
-    char delim = ' ';
+    char delim1 = ' ';
+    char delim2 = ' ';
     auto parser = Arg(dir1, "dir1")("The path of the first file") |
                   Arg(oper,"oper")("The operator") |
                   Arg(dir2, "dir2")("The path to the second file") |
-                  Arg(delim, "delimiter")("Delimiter if exists");
+                  Arg(delim1, "delimiter")("Delimiter if exists")|
+                  Arg(delim2, "delimiter")("Delimiter if exists");
 
 
     auto result = parser.parse(Args(argc, argv));
@@ -52,25 +55,9 @@ int main (int argc, char **argv){
          return 1;
       }
       else {
-        if (delim == ' '){
-        arry1 = retrieveIntegers(dir1);
-        arry2 = retrieveIntegers(dir2);
-        // Get starting point exact time
-        auto start = high_resolution_clock::now();
-        results = operation(arry1,arry2,oper);
-        // End point exact time
-        auto stop = high_resolution_clock::now();
-        // Calculate duration
-        auto duration = duration_cast<microseconds>(stop - start);
-        if(VALID_OPERATION) {
-            streamOut(results);
-            std::cout << "Execution time: " << duration.count() << "ms" << "\n";
-            }
         
-        } else {
-
-        arry1 = retrieveIntegers(dir1,delim);
-        arry2 = retrieveIntegers(dir2,delim);
+        arry1 = retrieveIntegers(dir1,delim1);
+        arry2 = retrieveIntegers(dir2,delim2);
 
         // Get starting point exact time
         auto start = high_resolution_clock::now();
@@ -83,12 +70,10 @@ int main (int argc, char **argv){
             streamOut(results);
             std::cout << "Execution time: " << duration.count() << "ms" << "\n";
             }
-
         }
+         return 0;
       }
 
-    return 0;
-}
 
 
 // The function takes a directory, parses through the txt file, and returns a vector containing the integers
