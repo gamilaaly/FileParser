@@ -20,6 +20,8 @@
 
 - Output will be in the same file directory as (results.txt)
 
+- In case of different file lengths, arrays are concatenated with either 1s - in case of division and multiplication - or 0s - in case of addition or subtraction-
+
 ## FMT library
 
 -to install the library:

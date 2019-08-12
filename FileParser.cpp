@@ -138,6 +138,7 @@ std::vector<int> retrieveIntegers(std::string directory, char delimiter){
 // Calculation function that takes the operator and perform the operation on both files
 
 std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std::string operation){
+
     if (operation == "plus"){ VALID_OPERATION = true; return sum(array1,array2);}
     else if (operation == "minus"){ VALID_OPERATION = true; return subtract(array1,array2);}
     else if (operation == "multiply"){ VALID_OPERATION = true; return multi(array1,array2);}
@@ -149,6 +150,15 @@ std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std
 
 std::vector<int> sum(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> sum;
+        if (array1.size() > array2.size()){
+        for (int i=0; i < (array1.size() - array2.size()); i++){
+            array2.push_back(0);
+        } 
+    } else if ( array2.size() > array1.size() ) {
+        for (int i=0; i < (array2.size() - array1.size()); i++){
+            array1.push_back(0);
+        } 
+    }
     for(int i=0; i<array1.size(); i++){
         sum.push_back(array1[i]+array2[i]);
     }
@@ -159,6 +169,15 @@ std::vector<int> sum(std::vector<int> array1,std::vector<int> array2){
 
 std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> subtraction;
+        if (array1.size() > array2.size()){
+        for (int i=0; i < (array1.size() - array2.size()); i++){
+            array2.push_back(0);
+        } 
+    } else if ( array2.size() > array1.size() ) {
+        for (int i=0; i < (array2.size() - array1.size()); i++){
+            array1.push_back(0);
+        } 
+    }
     for(int i=0; i<array1.size(); i++){
         subtraction.push_back(array1[i]-array2[i]);
     }
@@ -169,6 +188,15 @@ std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2){
 
 std::vector<int> multi(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> multi;
+        if (array1.size() > array2.size()){
+        for (int i=0; i < (array1.size() - array2.size()); i++){
+            array2.push_back(1);
+        } 
+    } else if ( array2.size() > array1.size() ) {
+        for (int i=0; i < (array2.size() - array1.size()); i++){
+            array1.push_back(1);
+        } 
+    }
     for(int i=0; i<array1.size(); i++){
         multi.push_back(array1[i]*array2[i]);
     }
@@ -179,6 +207,15 @@ std::vector<int> multi(std::vector<int> array1,std::vector<int> array2){
 
 std::vector<int> div(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> div;
+        if (array1.size() > array2.size()){
+        for (int i=0; i < (array1.size() - array2.size()); i++){
+            array2.push_back(1);
+        } 
+    } else if ( array2.size() > array1.size() ) {
+        for (int i=0; i < (array2.size() - array1.size()); i++){
+            array1.push_back(1);
+        } 
+    }
     for(int i=0; i<array1.size(); i++){
         div.push_back(array1[i]/array2[i]);
     }
