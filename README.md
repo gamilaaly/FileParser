@@ -24,21 +24,22 @@
 
 ## FMT library
 
-   - to install the library:
+   - To install the library:
        <http://www.nrstickley.com/the-fmt-library/>
 
    - FMT syntax:
        <https://fmt.dev/latest/syntax.html>
 
-   - to compile Reading_file.cpp:
-      g++ -O2 --std=c++11 -DFMT_HEADER_ONLY -o Reading_file Reading_file.cpp
+   - To compile Reading_file.cpp:
+      - g++ -O2 --std=c++11 -DFMT_HEADER_ONLY -o Reading_file Reading_file.cpp
 
 ## Clara Library 
 
-   - to install the library:
-     <https://github.com/catchorg/Clara>
+   - To install the library: 
+     - git clone <https://github.com/catchorg/Clara>
 
-   - sudo mkdir /usr/local/include/clara
-   - sudo cp Clara/include/clara.* /usr/local/include/clara/
-   - sudo cp Clara/include/clara_textflow.* /usr/local/include/clara/
+   - To be able to include the library:
+     - sudo mkdir /usr/local/include/clara
+     - sudo cp Clara/include/clara.* /usr/local/include/clara/
+     - sudo cp Clara/include/clara_textflow.* /usr/local/include/clara/
 
