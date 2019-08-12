@@ -12,7 +12,7 @@
 #include<fstream>
 #include <vector>
 #include<string>
-#include "clara.hpp"
+#include <clara/clara.hpp>
 #include <algorithm> 
 #include <chrono>
 #include <sstream>
