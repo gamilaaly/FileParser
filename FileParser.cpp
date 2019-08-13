@@ -18,10 +18,13 @@
 #include <sstream>
 #include <fmt/format.h>
 
+// Clara is used for Terminal Arguments parsing
 using namespace clara;
+
 using namespace std::chrono;
 
 
+// Functions & Flags declaration
 
 std::vector<int> retrieveIntegers(std::string directory);
 std::vector<int> retrieveIntegers(std::string directory,char delimiter);
@@ -33,6 +36,7 @@ std::vector<int> div(std::vector<int> array1,std::vector<int> array2);
 void streamOut(std::vector<int> results, std::string outDir);
 bool toggleFlag(bool flag);
 bool VALID_OPERATION = false;
+
 
 
 int main (int argc, char **argv){
@@ -136,13 +140,69 @@ std::vector<int> retrieveIntegers(std::string directory, char delimiter){
 
 
 // Calculation function that takes the operator and perform the operation on both files
+// In case of unequal lengths of arrays, the shorter array is concatenated with 0s in cases of subtraction and addition
+// or 1s in cases of multiplication or division
 
 std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std::string operation){
 
-    if (operation == "plus"){ VALID_OPERATION = true; return sum(array1,array2);}
-    else if (operation == "minus"){ VALID_OPERATION = true; return subtract(array1,array2);}
-    else if (operation == "multiply"){ VALID_OPERATION = true; return multi(array1,array2);}
-    else if (operation == "divide"){ VALID_OPERATION = true; return div(array1,array2);}
+    if (operation == "plus"){ 
+        VALID_OPERATION = true;
+        if (array1.size() > array2.size()){
+            for (int i=0; i < (array1.size() - array2.size()); i++){
+                array2.push_back(0);
+            } 
+        }  
+        else if ( array2.size() > array1.size() ) {
+            for (int i=0; i < (array2.size() - array1.size()); i++){
+            array1.push_back(0);
+            }    
+        }
+        return sum(array1,array2);
+    }
+
+    else if (operation == "minus"){ 
+        VALID_OPERATION = true; 
+        if (array1.size() > array2.size()){
+            for (int i=0; i < (array1.size() - array2.size()); i++){
+                array2.push_back(0);
+            } 
+        } 
+        else if ( array2.size() > array1.size() ) {
+            for (int i=0; i < (array2.size() - array1.size()); i++){
+            array1.push_back(0);
+            } 
+        }
+        return subtract(array1,array2);
+    }
+    else if (operation == "multiply"){ 
+        VALID_OPERATION = true;
+        if (array1.size() > array2.size()){
+            for (int i=0; i < (array1.size() - array2.size()); i++){
+                array2.push_back(1);
+            } 
+        } 
+        else if ( array2.size() > array1.size() ) {
+            for (int i=0; i < (array2.size() - array1.size()); i++){
+                array1.push_back(1);
+            } 
+        }
+        return multi(array1,array2);
+    }
+    else if (operation == "divide"){ 
+        VALID_OPERATION = true;
+        if (array1.size() > array2.size()){
+            for (int i=0; i < (array1.size() - array2.size()); i++){
+                array2.push_back(1);
+            } 
+        } 
+        else if ( array2.size() > array1.size() ) {
+            for (int i=0; i < (array2.size() - array1.size()); i++){
+                array1.push_back(1);
+            } 
+        }
+        return div(array1,array2);
+    }
+
     else std::cout << "Unable to use this operator" << "\n";
 }
 
@@ -150,15 +210,7 @@ std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std
 
 std::vector<int> sum(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> sum;
-        if (array1.size() > array2.size()){
-        for (int i=0; i < (array1.size() - array2.size()); i++){
-            array2.push_back(0);
-        } 
-    } else if ( array2.size() > array1.size() ) {
-        for (int i=0; i < (array2.size() - array1.size()); i++){
-            array1.push_back(0);
-        } 
-    }
+        
     for(int i=0; i<array1.size(); i++){
         sum.push_back(array1[i]+array2[i]);
     }
@@ -169,15 +221,7 @@ std::vector<int> sum(std::vector<int> array1,std::vector<int> array2){
 
 std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> subtraction;
-        if (array1.size() > array2.size()){
-        for (int i=0; i < (array1.size() - array2.size()); i++){
-            array2.push_back(0);
-        } 
-    } else if ( array2.size() > array1.size() ) {
-        for (int i=0; i < (array2.size() - array1.size()); i++){
-            array1.push_back(0);
-        } 
-    }
+        
     for(int i=0; i<array1.size(); i++){
         subtraction.push_back(array1[i]-array2[i]);
     }
@@ -188,15 +232,7 @@ std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2){
 
 std::vector<int> multi(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> multi;
-        if (array1.size() > array2.size()){
-        for (int i=0; i < (array1.size() - array2.size()); i++){
-            array2.push_back(1);
-        } 
-    } else if ( array2.size() > array1.size() ) {
-        for (int i=0; i < (array2.size() - array1.size()); i++){
-            array1.push_back(1);
-        } 
-    }
+        
     for(int i=0; i<array1.size(); i++){
         multi.push_back(array1[i]*array2[i]);
     }
@@ -207,15 +243,7 @@ std::vector<int> multi(std::vector<int> array1,std::vector<int> array2){
 
 std::vector<int> div(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> div;
-        if (array1.size() > array2.size()){
-        for (int i=0; i < (array1.size() - array2.size()); i++){
-            array2.push_back(1);
-        } 
-    } else if ( array2.size() > array1.size() ) {
-        for (int i=0; i < (array2.size() - array1.size()); i++){
-            array1.push_back(1);
-        } 
-    }
+        
     for(int i=0; i<array1.size(); i++){
         div.push_back(array1[i]/array2[i]);
     }
