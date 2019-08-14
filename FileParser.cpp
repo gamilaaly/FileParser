@@ -7,16 +7,43 @@
 // NOW ADDED AN OPTION TO ADD THE DELIMITER THROUGH THE TERMINAL ARGUMENTS TO PARSE ALL KINDS OF DELIMITERS
 // Author: As'ad
 
+/**
+ * Asem: 
+ * 1- The above paragraph is difficult to read. No need to upper case'ing it.
+ * */
 
-#include<iostream>
-#include<fstream>
+
+/**
+ * 
+ * 2- The includes can be better sorted and made in related groups, I fixed this.
+ * 3- Be strictly consistent in using spaces, for example:
+ * Do not:
+ * #include<fstream>
+ * #include <vector>
+ * Instead:
+ * #include <fstream>
+ * #include <vector>
+ * I fixed this.
+ * */
+
+// STL
 #include <vector>
-#include<string>
-#include <clara/clara.hpp>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <algorithm> 
 #include <chrono>
-#include <sstream>
+
+// Misc.
+#include <clara/clara.hpp>
 #include <fmt/format.h>
+
+
+/**
+ * 4- Avoid opening namespaces global-wide.
+ * You can instead open a namespace only within the function body, where you actually invoke the library.
+ * */
 
 // Clara is used for Terminal Arguments parsing
 using namespace clara;
@@ -25,6 +52,13 @@ using namespace std::chrono;
 
 
 // Functions & Flags declaration
+
+/**
+ * 11- A general rule for all of the functions in this file.
+ * If you are receiving a container that you only read from, then receive it by constant reference (e.g const std::string &dictionary).
+ * If you are receiving a container that you will modify, then receive it by reference (e.g std::string &dictionary).
+ * By using references, you avoid the overhead of the unnecessary copying of data to a new container.
+ * */
 
 std::vector<int> retrieveIntegers(std::string directory);
 std::vector<int> retrieveIntegers(std::string directory,char delimiter);
@@ -35,17 +69,26 @@ std::vector<int> multi(std::vector<int> array1,std::vector<int> array2);
 std::vector<int> div(std::vector<int> array1,std::vector<int> array2);
 void streamOut(std::vector<int> results, std::string outDir);
 bool toggleFlag(bool flag);
+
+/**
+ * 5- Never make global variables, unless for defining global constants.
+ * */
 bool VALID_OPERATION = false;
 
 
 
 int main (int argc, char **argv){
     std::vector<int> arry1,arry2,results;
-    auto dir1 = std::string{};
-    auto dir2 = std::string{};
-    auto oper = std::string{};
-    auto outDir = std::string{};
-    outDir = "results.txt";
+
+    // auto dir1 = std::string{};
+    // auto dir2 = std::string{};
+    // auto oper = std::string{};
+
+    std::string dir1, dir2, oper; // 6- Just a matter of taste, and to be consistent with the style at line 74.
+
+    // auto outDir = std::string{};
+    std::string outDir = "results.txt"; // 7- Always better to declare and initialize at the same line, when possible.
+
     char delim1 = ' ';
     char delim2 = ' ';
     auto parser = Arg(dir1, "dir1")("The path of the first file") |
@@ -98,9 +141,9 @@ std::vector<int> retrieveIntegers(std::string directory){
         }
 
         file.close();
-
+        // 8- Unnecessary empty line.
     }
-
+    // 8- Unncecessary empty line between if and else statements.
     else {
         std::cerr << "Unable to open file " << directory << "\n";
     }
@@ -110,10 +153,10 @@ std::vector<int> retrieveIntegers(std::string directory){
 
 // This function takes a directory and a delimiter, parses through the txt file, and returns a vector containing the integers
 
-std::vector<int> retrieveIntegers(std::string directory, char delimiter){
-    std::ifstream file;
-    std::vector<std::string> arry;
-    std::vector<int> arryint;
+std::vector<istd::stringnt> retrieveIntegers(std::string directory, char delimiter){
+    std::ifststd::stringream file;
+    std::vectstd::stringor<std::string> arry;
+    std::vectstd::stringor<int> arryint;
     std::string temp;
     file.open(directory);
     if (file.is_open()){
@@ -144,6 +187,13 @@ std::vector<int> retrieveIntegers(std::string directory, char delimiter){
 // or 1s in cases of multiplication or division
 
 std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std::string operation){
+
+    /**
+     * 9- Here you better represent the operation with `char` type (e.g '+', '-', etc.) to 
+     * avoid the misspelling of words, or ideally, in big projects, using Enum Classes.
+     * By using `char` or Enums, here we optimally can use the switch-case statement that 
+     * provides a more readable logic.
+     * */
 
     if (operation == "plus"){ 
         VALID_OPERATION = true;
