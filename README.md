@@ -1,17 +1,10 @@
 # FileParser
-
-## Command Line Parsing using Clara Library
-
-- After compiling the file *CommandLineArguments.cpp*, run it using (ex: ./app) and add the path to the input files then path of output file (ex: ./app   pathOfTheFile/Input1.txt  pathOfTheFile/Input1.txt   pathOfTheFile/Output.txt).
-
-- Note: Don't switch the order of the arguments as they are stored in variables in this order.
-
 ## Using FileParser
 
 - Arguments required are:
 
   - Directory of the first text file (ex: /home/user/directory/txtfile.txt)
-  - One of the following operations ("plus" - "minus" - "multiply" - "divide")
+  - One of the following operations ("+" - "-" - "*" - "/")
   - Directory of the second text file
   - Delimiter if any exists (use [-q] followed by first delimiter and [-w] followed by second delimiter)
   - Output Directory (Leave blank to save in the program directory, use [-e] followed by export directory)

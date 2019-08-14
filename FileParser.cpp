@@ -1,22 +1,20 @@
-// THIS IS MY ATTEMPT TO BUILD A TXT FILE PARSER, IT IS NOT RELATED TO OUR GRADUATION PROJECT FINAL OUTPUT, BUT MORE OF
-// WARM UP FOR MY C++ DEVELOPING SKILLS, I HOPE YOU UNDERSTAND THAT I AM NOT INTENDING TO TRESPASS ANY OF YOUR WORK JURISDICTION
-// THIS ALGORITHM TAKES 2 DIRECTORIES AND AN OPERATION FROM THE TERMINAL, READS INTEGERS IN THESE FILES, PERFORM OPERATION ON BOTH OF THEM
-// AND RETURNS THE RESULTS IN AN EXTERNAL TXT FILE.
-// EXECUTION TIME IS CALCULATED AND PRINTED INTO TERMINAL.
-// EDIT::
-// NOW ADDED AN OPTION TO ADD THE DELIMITER THROUGH THE TERMINAL ARGUMENTS TO PARSE ALL KINDS OF DELIMITERS
-// Author: As'ad
-
+// This is my attempt to build a txt file parser, it is not related to our graduation project final output, but more of
+// warm up for my c++ developing skills, I hope you understand that I am not intending to trespass any of your work jurisdiction
+// this algorithm takes 2 directories and an operation from the terminal, reads integers in these files, perform operation on both of them
+// and returns the results in an external txt file.
+// Execution time is calculated and printed into terminal.
+// Edit::
+// Now added an option to add the delimiter through the terminal arguments to parse all kinds of delimiters.
 /**
  * Asem: 
- * 1- The above paragraph is difficult to read. No need to upper case'ing it.
+ * 1- The above paragraph is difficult to read. No need to upper case'ing it. (done)
  * */
 
 
 /**
  * 
- * 2- The includes can be better sorted and made in related groups, I fixed this.
- * 3- Be strictly consistent in using spaces, for example:
+ * 2- The includes can be better sorted and made in related groups, I fixed this. done by Eng.Asem
+ * 3- Be strictly consistent in using spaces, for example: done by Eng.Asem
  * Do not:
  * #include<fstream>
  * #include <vector>
@@ -42,13 +40,9 @@
 
 /**
  * 4- Avoid opening namespaces global-wide.
- * You can instead open a namespace only within the function body, where you actually invoke the library.
+ * You can instead open a namespace only within the function body, where you actually invoke the library. (done)
  * */
-
-// Clara is used for Terminal Arguments parsing
-using namespace clara;
-
-using namespace std::chrono;
+using namespace std::chrono; // I don't know where to put this in the other functions
 
 
 // Functions & Flags declaration
@@ -71,24 +65,16 @@ void streamOut(std::vector<int> results, std::string outDir);
 bool toggleFlag(bool flag);
 
 /**
- * 5- Never make global variables, unless for defining global constants.
+ * 5- Never make global variables, unless for defining global constants. // I don't get what is the problem here as we use it in main function and other function.
  * */
 bool VALID_OPERATION = false;
 
-
-
 int main (int argc, char **argv){
     std::vector<int> arry1,arry2,results;
-
-    // auto dir1 = std::string{};
-    // auto dir2 = std::string{};
-    // auto oper = std::string{};
-
     std::string dir1, dir2, oper; // 6- Just a matter of taste, and to be consistent with the style at line 74.
+    std::string outDir = "results.txt"; // 7- Always better to declare and initialize at the same line, when possible. 
 
-    // auto outDir = std::string{};
-    std::string outDir = "results.txt"; // 7- Always better to declare and initialize at the same line, when possible.
-
+    using namespace clara;
     char delim1 = ' ';
     char delim2 = ' ';
     auto parser = Arg(dir1, "dir1")("The path of the first file") |
@@ -97,7 +83,6 @@ int main (int argc, char **argv){
                   Opt(delim1, "delimiter")["-q"]("Delimiter if exists")|
                   Opt(delim2, "delimiter")["-w"]("Delimiter if exists") |
                   Opt(outDir, "output directory")["-e"]("Output Directory");
-
 
     auto result = parser.parse(Args(argc, argv));
       if (!result){
@@ -141,22 +126,19 @@ std::vector<int> retrieveIntegers(std::string directory){
         }
 
         file.close();
-        // 8- Unnecessary empty line.
     }
-    // 8- Unncecessary empty line between if and else statements.
     else {
         std::cerr << "Unable to open file " << directory << "\n";
     }
-
     return arry;
 }
 
 // This function takes a directory and a delimiter, parses through the txt file, and returns a vector containing the integers
 
-std::vector<istd::stringnt> retrieveIntegers(std::string directory, char delimiter){
-    std::ifststd::stringream file;
-    std::vectstd::stringor<std::string> arry;
-    std::vectstd::stringor<int> arryint;
+std::vector<int> retrieveIntegers(std::string directory, char delimiter){
+    std::ifstream file;
+    std::vector<std::string> arry;
+    std::vector<int> arryint;
     std::string temp;
     file.open(directory);
     if (file.is_open()){
@@ -178,10 +160,6 @@ std::vector<istd::stringnt> retrieveIntegers(std::string directory, char delimit
     return arryint;
 }
 
-
-
-
-
 // Calculation function that takes the operator and perform the operation on both files
 // In case of unequal lengths of arrays, the shorter array is concatenated with 0s in cases of subtraction and addition
 // or 1s in cases of multiplication or division
@@ -192,10 +170,10 @@ std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std
      * 9- Here you better represent the operation with `char` type (e.g '+', '-', etc.) to 
      * avoid the misspelling of words, or ideally, in big projects, using Enum Classes.
      * By using `char` or Enums, here we optimally can use the switch-case statement that 
-     * provides a more readable logic.
+     * provides a more readable logic. (done)
      * */
 
-    if (operation == "plus"){ 
+    if (operation == "+"){ 
         VALID_OPERATION = true;
         if (array1.size() > array2.size()){
             for (int i=0; i < (array1.size() - array2.size()); i++){
@@ -210,7 +188,7 @@ std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std
         return sum(array1,array2);
     }
 
-    else if (operation == "minus"){ 
+    else if (operation == "-"){ 
         VALID_OPERATION = true; 
         if (array1.size() > array2.size()){
             for (int i=0; i < (array1.size() - array2.size()); i++){
@@ -224,7 +202,7 @@ std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std
         }
         return subtract(array1,array2);
     }
-    else if (operation == "multiply"){ 
+    else if (operation == "*"){ 
         VALID_OPERATION = true;
         if (array1.size() > array2.size()){
             for (int i=0; i < (array1.size() - array2.size()); i++){
@@ -238,7 +216,7 @@ std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std
         }
         return multi(array1,array2);
     }
-    else if (operation == "divide"){ 
+    else if (operation == "/"){ 
         VALID_OPERATION = true;
         if (array1.size() > array2.size()){
             for (int i=0; i < (array1.size() - array2.size()); i++){
@@ -289,8 +267,6 @@ std::vector<int> multi(std::vector<int> array1,std::vector<int> array2){
     return multi;
 }
 
-
-
 std::vector<int> div(std::vector<int> array1,std::vector<int> array2){
     std::vector<int> div;
         
@@ -299,8 +275,6 @@ std::vector<int> div(std::vector<int> array1,std::vector<int> array2){
     }
     return div;
 }
-
-
 // not used for now
 bool toggleFlag(bool flag){
     if (flag == true){
@@ -326,7 +300,6 @@ void streamOut(std::vector<int> results, std::string outDir){
     } else {
         std::cout << "Unable to open file";
     }
-
 }
 
 
