@@ -247,7 +247,6 @@ std::vector<int> div(const std::vector<int> &array1,const std::vector<int> &arra
 
 void streamOut(const std::vector<int> &results, const std::string &outDir){
     std::ofstream resultFile;
-    int x;
     resultFile.open(outDir);
     if (resultFile.is_open()){
         for(int i=0; i < results.size(); i++){

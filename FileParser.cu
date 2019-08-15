@@ -1,62 +1,46 @@
-// THIS IS MY ATTEMPT TO BUILD A TXT FILE PARSER, IT IS NOT RELATED TO OUR GRADUATION PROJECT FINAL OUTPUT, BUT MORE OF
-// WARM UP FOR MY C++ DEVELOPING SKILLS, I HOPE YOU UNDERSTAND THAT I AM NOT INTENDING TO TRESPASS ANY OF YOUR WORK JURISDICTION
-// THIS ALGORITHM TAKES 2 DIRECTORIES AND AN OPERATION FROM THE TERMINAL, READS INTEGERS IN THESE FILES, PERFORM OPERATION ON BOTH OF THEM
-// AND RETURNS THE RESULTS IN AN EXTERNAL TXT FILE.
-// EXECUTION TIME IS CALCULATED AND PRINTED INTO TERMINAL.
-// EDIT::
-// NOW ADDED AN OPTION TO ADD THE DELIMITER THROUGH THE TERMINAL ARGUMENTS TO PARSE ALL KINDS OF DELIMITERS
-// Author: As'ad
-
-
-#include<iostream>
-#include<fstream>
 #include <vector>
-#include<string>
-#include <clara/clara.hpp>
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include <algorithm> 
 #include <chrono>
-#include <sstream>
-#include <fmt/format.h>
 
-// Clara is used for Terminal Arguments parsing
-using namespace clara;
-
-using namespace std::chrono;
+#include <clara/clara.hpp>
+//#include <fmt/format.h>
 
 
-// Functions & Flags declaration
+std::vector<int> retrieveIntegers(const std::string &directory);
+std::vector<int> retrieveIntegers(const std::string &directory,const char &delimiter);
+std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation);
+std::vector<int> sum(const std::vector<int> &array1, const std::vector<int> &array2);
+std::vector<int> sub(const std::vector<int> &array1,const std::vector<int> &array2);
+std::vector<int> mul(const std::vector<int> &array1,const std::vector<int> &array2);
+std::vector<int> div(const std::vector<int> &array1,const std::vector<int> &array2);
+void streamOut(const std::vector<int> &results, const std::string &outDir);
 
-std::vector<int> retrieveIntegers(std::string directory);
-std::vector<int> retrieveIntegers(std::string directory,char delimiter);
-std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std::string operation);
-std::vector<int> sum(std::vector<int> array1,std::vector<int> array2);
-std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2);
-std::vector<int> multi(std::vector<int> array1,std::vector<int> array2);
-std::vector<int> div(std::vector<int> array1,std::vector<int> array2);
-void streamOut(std::vector<int> results, std::string outDir);
-bool toggleFlag(bool flag);
+
+/**
+ * 5- Never make global variables, unless for defining global constants. // I don't get what is the problem here as we use it in main function and other function.
+ * */
 bool VALID_OPERATION = false;
-
-
 
 int main (int argc, char **argv){
     std::vector<int> arry1,arry2,results;
-    auto dir1 = std::string{};
-    auto dir2 = std::string{};
-    auto oper = std::string{};
-    auto outDir = std::string{};
-    outDir = "results.txt";
+    std::string dir1, dir2; // 6- Just a matter of taste, and to be consistent with the style at line 74.
+    std::string outDir = "results.txt"; // 7- Always better to declare and initialize at the same line, when possible. 
     char delim1 = ' ';
     char delim2 = ' ';
-    auto parser = Arg(dir1, "dir1")("The path of the first file") |
-                  Arg(oper,"oper")("The operator") |
-                  Arg(dir2, "dir2")("The path to the second file") |
-                  Opt(delim1, "delimiter")["-q"]("Delimiter if exists")|
-                  Opt(delim2, "delimiter")["-w"]("Delimiter if exists") |
-                  Opt(outDir, "output directory")["-e"]("Output Directory");
+    char oper;
+    auto parser = clara::Arg(dir1, "dir1")("The path of the first file") |
+                  clara::Arg(oper,"oper")("The operator") |
+                  clara::Arg(dir2, "dir2")("The path to the second file") |
+                  clara::Opt(delim1, "delimiter")["-f"]("Delimiter if exists")|
+                  clara::Opt(delim2, "delimiter")["-s"]("Delimiter if exists") |
+                  clara::Opt(outDir, "output directory")["-e"]("Output Directory");
 
 
-    auto result = parser.parse(Args(argc, argv));
+    auto result = parser.parse(clara::Args(argc, argv));
       if (!result){
          std::cerr << "Error in command line: " << result.errorMessage() << std::endl;
          return 1;
@@ -67,12 +51,12 @@ int main (int argc, char **argv){
         arry2 = retrieveIntegers(dir2,delim2);
 
         // Get starting point exact time
-        auto start = high_resolution_clock::now();
+        auto start = std::chrono::high_resolution_clock::now();
         results = operation(arry1,arry2,oper);
         // End point exact time
-        auto stop = high_resolution_clock::now();
+        auto stop = std::chrono::high_resolution_clock::now();
         // Calculate duration
-        auto duration = duration_cast<microseconds>(stop - start);
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
         if(VALID_OPERATION) {
             streamOut(results,outDir);
             std::cout << "Execution time: " << duration.count() << "ms" << "\n";
@@ -82,35 +66,9 @@ int main (int argc, char **argv){
       }
 
 
-
-// The function takes a directory, parses through the txt file, and returns a vector containing the integers
-
-
-std::vector<int> retrieveIntegers(std::string directory){
-    std::ifstream file;
-    std::vector<int> arry;
-    int temp;
-    file.open(directory);
-    if (file.is_open()){
-
-        while(file >> temp){
-            arry.push_back(temp);
-        }
-
-        file.close();
-
-    }
-
-    else {
-        std::cerr << "Unable to open file " << directory << "\n";
-    }
-
-    return arry;
-}
-
 // This function takes a directory and a delimiter, parses through the txt file, and returns a vector containing the integers
 
-std::vector<int> retrieveIntegers(std::string directory, char delimiter){
+std::vector<int> retrieveIntegers(const std::string &directory, const char &delimiter){
     std::ifstream file;
     std::vector<std::string> arry;
     std::vector<int> arryint;
@@ -135,80 +93,78 @@ std::vector<int> retrieveIntegers(std::string directory, char delimiter){
     return arryint;
 }
 
-
-
-
-
 // Calculation function that takes the operator and perform the operation on both files
 // In case of unequal lengths of arrays, the shorter array is concatenated with 0s in cases of subtraction and addition
 // or 1s in cases of multiplication or division
 
-std::vector<int> operation(std::vector<int> array1, std::vector<int> array2, std::string operation){
+std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation){
 
-    if (operation == "plus"){ 
-        VALID_OPERATION = true;
-        if (array1.size() > array2.size()){
-            for (int i=0; i < (array1.size() - array2.size()); i++){
-                array2.push_back(0);
-            } 
-        }  
-        else if ( array2.size() > array1.size() ) {
-            for (int i=0; i < (array2.size() - array1.size()); i++){
-            array1.push_back(0);
-            }    
-        }
-        return sum(array1,array2);
-    }
+    /**
+     * 9- Here you better represent the operation with `char` type (e.g '+', '-', etc.) to 
+     * avoid the misspelling of words, or ideally, in big projects, using Enum Classes.
+     * By using `char` or Enums, here we optimally can use the switch-case statement that 
+     * provides a more readable logic. (done)
+     * */
+    switch (operation){
+        case '+':   VALID_OPERATION = true;
+                    if (array1.size() > array2.size()){
+                        for (int i=0; i < (array1.size() - array2.size()); i++){
+                            array2.push_back(0);
+                        } 
+                    }  
+                    else if ( array2.size() > array1.size() ) {
+                        for (int i=0; i < (array2.size() - array1.size()); i++){
+                            array1.push_back(0);
+                        }    
+                    }
+                    return sum(array1,array2);
 
-    else if (operation == "minus"){ 
-        VALID_OPERATION = true; 
-        if (array1.size() > array2.size()){
-            for (int i=0; i < (array1.size() - array2.size()); i++){
-                array2.push_back(0);
-            } 
-        } 
-        else if ( array2.size() > array1.size() ) {
-            for (int i=0; i < (array2.size() - array1.size()); i++){
-            array1.push_back(0);
-            } 
-        }
-        return subtract(array1,array2);
-    }
-    else if (operation == "multiply"){ 
-        VALID_OPERATION = true;
-        if (array1.size() > array2.size()){
-            for (int i=0; i < (array1.size() - array2.size()); i++){
-                array2.push_back(1);
-            } 
-        } 
-        else if ( array2.size() > array1.size() ) {
-            for (int i=0; i < (array2.size() - array1.size()); i++){
-                array1.push_back(1);
-            } 
-        }
-        return multi(array1,array2);
-    }
-    else if (operation == "divide"){ 
-        VALID_OPERATION = true;
-        if (array1.size() > array2.size()){
-            for (int i=0; i < (array1.size() - array2.size()); i++){
-                array2.push_back(1);
-            } 
-        } 
-        else if ( array2.size() > array1.size() ) {
-            for (int i=0; i < (array2.size() - array1.size()); i++){
-                array1.push_back(1);
-            } 
-        }
-        return div(array1,array2);
-    }
+        case '-':   VALID_OPERATION = true;
+                    if (array1.size() > array2.size()){
+                        for (int i=0; i < (array1.size() - array2.size()); i++){
+                            array2.push_back(0);
+                        } 
+                    }  
+                    else if ( array2.size() > array1.size() ) {
+                        for (int i=0; i < (array2.size() - array1.size()); i++){
+                            array1.push_back(0);
+                        }    
+                    }
+                    return sub(array1,array2);
 
-    else std::cout << "Unable to use this operator" << "\n";
+        case '*':   VALID_OPERATION = true;
+                    if (array1.size() > array2.size()){
+                        for (int i=0; i < (array1.size() - array2.size()); i++){
+                            array2.push_back(1);
+                        } 
+                    }  
+                    else if ( array2.size() > array1.size() ) {
+                        for (int i=0; i < (array2.size() - array1.size()); i++){
+                            array1.push_back(1);
+                        }    
+                    }
+                    return mul(array1,array2);
+
+        case '/':   VALID_OPERATION = true;
+                    if (array1.size() > array2.size()){
+                        for (int i=0; i < (array1.size() - array2.size()); i++){
+                            array2.push_back(1);
+                        } 
+                    }  
+                    else if ( array2.size() > array1.size() ) {
+                        for (int i=0; i < (array2.size() - array1.size()); i++){
+                            array1.push_back(1);
+                        }    
+                    }
+                    return div(array1,array2);
+        
+        default:    std::cout << "Invalid operator!" << "\n" << "Expected '+', '-', '*' or '/' " << "got " << operation << std::endl; 
+    }
 }
 
 
 
-std::vector<int> sum(std::vector<int> array1,std::vector<int> array2){
+std::vector<int> sum(const std::vector<int> &array1,const std::vector<int> &array2){
     std::vector<int> sum;
         
     for(int i=0; i<array1.size(); i++){
@@ -219,7 +175,7 @@ std::vector<int> sum(std::vector<int> array1,std::vector<int> array2){
 
 
 
-std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2){
+std::vector<int> sub(const std::vector<int> &array1,const std::vector<int> &array2){
     std::vector<int> subtraction;
         
     for(int i=0; i<array1.size(); i++){
@@ -230,7 +186,7 @@ std::vector<int> subtract(std::vector<int> array1,std::vector<int> array2){
 
 
 
-std::vector<int> multi(std::vector<int> array1,std::vector<int> array2){
+std::vector<int> mul(const std::vector<int> &array1,const std::vector<int> &array2){
     std::vector<int> multi;
         
     for(int i=0; i<array1.size(); i++){
@@ -239,9 +195,7 @@ std::vector<int> multi(std::vector<int> array1,std::vector<int> array2){
     return multi;
 }
 
-
-
-std::vector<int> div(std::vector<int> array1,std::vector<int> array2){
+std::vector<int> div(const std::vector<int> &array1,const std::vector<int> &array2){
     std::vector<int> div;
         
     for(int i=0; i<array1.size(); i++){
@@ -251,20 +205,9 @@ std::vector<int> div(std::vector<int> array1,std::vector<int> array2){
 }
 
 
-// not used for now
-bool toggleFlag(bool flag){
-    if (flag == true){
-        flag = false;
-    } else {
-        flag = true;
-    }
-    return flag;
-}
-
-
 // The function that export the results into a .txt file called "results.txt"
 
-void streamOut(std::vector<int> results, std::string outDir){
+void streamOut(const std::vector<int> &results, const std::string &outDir){
     std::ofstream resultFile;
     int x;
     resultFile.open(outDir);
@@ -276,7 +219,6 @@ void streamOut(std::vector<int> results, std::string outDir){
     } else {
         std::cout << "Unable to open file";
     }
-
 }
 
 
