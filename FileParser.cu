@@ -19,8 +19,8 @@
 #include <fmt/format.h>
 
 // Clara is used for Terminal Arguments parsing
-using namespace std::clara;
-// For timing and calculation of execution time
+using namespace clara;
+
 using namespace std::chrono;
 
 
