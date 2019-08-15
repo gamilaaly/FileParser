@@ -19,6 +19,7 @@
  * */
 
 // STL
+#include <utility> // for std::pair
 #include <vector>
 #include <string>
 #include <iostream>
@@ -28,8 +29,8 @@
 #include <chrono>
 
 // Misc.
-#include <clara/clara.hpp>
-#include <fmt/format.h>
+#include "clara.hpp"
+#include "fmt/format.h"
 
 
 /**
@@ -50,7 +51,12 @@
 
 std::vector<int> retrieveIntegers(const std::string &directory);
 std::vector<int> retrieveIntegers(const std::string &directory,const char &delimiter);
-std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation);
+
+/**
+ * 13- You can return two variables here: the results and a flag indicating whether it is a valid operation.
+ * For that we can use `std::pair` class: doc https://en.cppreference.com/w/cpp/utility/pair
+ * */
+std::pair< std::vector<int>, bool> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation);
 std::vector<int> sum(const std::vector<int> &array1, const std::vector<int> &array2);
 std::vector<int> sub(const std::vector<int> &array1,const std::vector<int> &array2);
 std::vector<int> mul(const std::vector<int> &array1,const std::vector<int> &array2);
@@ -59,9 +65,11 @@ void streamOut(const std::vector<int> &results, const std::string &outDir);
 
 
 /**
- * 5- Never make global variables, unless for defining global constants. // I don't get what is the problem here as we use it in main function and other function.
+ * 5- Never make global variables, unless for defining global constants. 
+ * // I don't get what is the problem here as we use it in main function and other function.
+ * Asem: in the current task this global variable is not problematic, which is not always the case.
+ * Watch an alternative solution to avoid this global variable.
  * */
-bool VALID_OPERATION = false;
 
 int main (int argc, char **argv){
     std::vector<int> arry1,arry2,results;
@@ -90,12 +98,16 @@ int main (int argc, char **argv){
 
         // Get starting point exact time
         auto start = std::chrono::high_resolution_clock::now();
-        results = operation(arry1,arry2,oper);
+
+        /**
+         * This is a good technique to learn, called structured binding, introduced in C++17.
+         * */
+        auto [results, valid] = operation(arry1,arry2,oper);
         // End point exact time
         auto stop = std::chrono::high_resolution_clock::now();
         // Calculate duration
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-        if(VALID_OPERATION) {
+        if(valid) {
             streamOut(results,outDir);
             std::cout << "Execution time: " << duration.count() << "ms" << "\n";
             }
@@ -135,7 +147,8 @@ std::vector<int> retrieveIntegers(const std::string &directory, const char &deli
 // In case of unequal lengths of arrays, the shorter array is concatenated with 0s in cases of subtraction and addition
 // or 1s in cases of multiplication or division
 
-std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation){
+std::pair< std::vector<int>, bool>
+operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation){
 
     /**
      * 9- Here you better represent the operation with `char` type (e.g '+', '-', etc.) to 
@@ -143,61 +156,47 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
      * By using `char` or Enums, here we optimally can use the switch-case statement that 
      * provides a more readable logic. (done)
      * */
-    switch (operation){
-        case '+':   VALID_OPERATION = true;
-                    if (array1.size() > array2.size()){
-                        for (int i=0; i < (array1.size() - array2.size()); i++){
-                            array2.push_back(0);
-                        } 
-                    }  
-                    else if ( array2.size() > array1.size() ) {
-                        for (int i=0; i < (array2.size() - array1.size()); i++){
-                            array1.push_back(0);
-                        }    
-                    }
-                    return sum(array1,array2);
 
-        case '-':   VALID_OPERATION = true;
-                    if (array1.size() > array2.size()){
-                        for (int i=0; i < (array1.size() - array2.size()); i++){
-                            array2.push_back(0);
-                        } 
-                    }  
-                    else if ( array2.size() > array1.size() ) {
-                        for (int i=0; i < (array2.size() - array1.size()); i++){
-                            array1.push_back(0);
-                        }    
-                    }
-                    return sub(array1,array2);
+    /**
+     * 12- You can kill the redundancy of the padding logic.
+     * */
+    int neutral = (operation == '+' || operation == '-')? 0 : 1;
 
-        case '*':   VALID_OPERATION = true;
-                    if (array1.size() > array2.size()){
-                        for (int i=0; i < (array1.size() - array2.size()); i++){
-                            array2.push_back(1);
-                        } 
-                    }  
-                    else if ( array2.size() > array1.size() ) {
-                        for (int i=0; i < (array2.size() - array1.size()); i++){
-                            array1.push_back(1);
-                        }    
-                    }
-                    return mul(array1,array2);
-
-        case '/':   VALID_OPERATION = true;
-                    if (array1.size() > array2.size()){
-                        for (int i=0; i < (array1.size() - array2.size()); i++){
-                            array2.push_back(1);
-                        } 
-                    }  
-                    else if ( array2.size() > array1.size() ) {
-                        for (int i=0; i < (array2.size() - array1.size()); i++){
-                            array1.push_back(1);
-                        }    
-                    }
-                    return div(array1,array2);
-        
-        default:    std::cout << "Invalid operator!" << "\n" << "Expected '+', '-', '*' or '/' " << "got " << operation << std::endl; 
+    if (array1.size() > array2.size()){
+        for (int i=0; i < (array1.size() - array2.size()); i++){
+            array2.push_back(neutral);
+            } 
+        }  
+    else if ( array2.size() > array1.size() ) {
+        for (int i=0; i < (array2.size() - array1.size()); i++){
+            array1.push_back(neutral);
+        }    
     }
+
+    /**
+     * 13- Just forgot to warn you about some special characters 
+     * that you may wish to avoid conflicts of using in the command line like '*' (astrist) and forward '/' (forward slash).
+     * Astrisk is used in the terminal for wild card tricks (pattern matching).
+     * Forward slash is used as directories separator.
+     * */
+    std::vector< int > results;
+    bool valid = true;
+    switch (operation){
+        case '+':  results = sum(array1,array2); break;
+
+        case '-':  results = sub(array1,array2); break;
+
+        case 'm':  results = mul(array1,array2); break;
+
+        case 'd':  results = div(array1,array2); break;
+        
+        default:   valid = false;
+                std::cout << "Invalid operator!" << "\n" 
+                        << "Expected '+', '-', 'm' or 'd' " 
+                        << "got " << operation << std::endl; 
+    }
+
+    return std::make_pair( results, valid );
 }
 
 
@@ -257,6 +256,3 @@ void streamOut(const std::vector<int> &results, const std::string &outDir){
         std::cout << "Unable to open file";
     }
 }
-
-
-
