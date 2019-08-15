@@ -19,16 +19,12 @@ std::vector<int> mul(const std::vector<int> &array1,const std::vector<int> &arra
 std::vector<int> div(const std::vector<int> &array1,const std::vector<int> &array2);
 void streamOut(const std::vector<int> &results, const std::string &outDir);
 
-
-/**
- * 5- Never make global variables, unless for defining global constants. // I don't get what is the problem here as we use it in main function and other function.
- * */
 bool VALID_OPERATION = false;
 
 int main (int argc, char **argv){
     std::vector<int> arry1,arry2,results;
-    std::string dir1, dir2; // 6- Just a matter of taste, and to be consistent with the style at line 74.
-    std::string outDir = "results.txt"; // 7- Always better to declare and initialize at the same line, when possible. 
+    std::string dir1, dir2; 
+    std::string outDir = "results.txt"; 
     char delim1 = ' ';
     char delim2 = ' ';
     char oper;
@@ -98,13 +94,6 @@ std::vector<int> retrieveIntegers(const std::string &directory, const char &deli
 // or 1s in cases of multiplication or division
 
 std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation){
-
-    /**
-     * 9- Here you better represent the operation with `char` type (e.g '+', '-', etc.) to 
-     * avoid the misspelling of words, or ideally, in big projects, using Enum Classes.
-     * By using `char` or Enums, here we optimally can use the switch-case statement that 
-     * provides a more readable logic. (done)
-     * */
     switch (operation){
         case '+':   VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
@@ -209,7 +198,6 @@ std::vector<int> div(const std::vector<int> &array1,const std::vector<int> &arra
 
 void streamOut(const std::vector<int> &results, const std::string &outDir){
     std::ofstream resultFile;
-    int x;
     resultFile.open(outDir);
     if (resultFile.is_open()){
         for(int i=0; i < results.size(); i++){
