@@ -107,7 +107,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
 
    
     switch (operation){
-        case 'sum':   VALID_OPERATION = true;
+        case 'p' :  VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
                         for (int i=0; i < (array1.size() - array2.size()); i++){
                             array2.push_back(0);
@@ -120,7 +120,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                     }
                     return sum(array1,array2);
 
-        case 'sub':   VALID_OPERATION = true;
+        case 's':   VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
                         for (int i=0; i < (array1.size() - array2.size()); i++){
                             array2.push_back(0);
@@ -133,7 +133,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                     }
                     return sub(array1,array2);
 
-        case 'mul':   VALID_OPERATION = true;
+        case 'm':   VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
                         for (int i=0; i < (array1.size() - array2.size()); i++){
                             array2.push_back(1);
@@ -146,7 +146,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                     }
                     return mul(array1,array2);
 
-        case 'div':   VALID_OPERATION = true;
+        case 'd':   VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
                         for (int i=0; i < (array1.size() - array2.size()); i++){
                             array2.push_back(1);
