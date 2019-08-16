@@ -5,7 +5,7 @@
 - Arguments required are:
 
   - Directory of the first text file (ex: /home/user/directory/txtfile.txt)
-  - One of the following operations ("+" | "-" | "m" | "d")
+  - One of the following operations ("sum" | "sub" | "mul" | "div")
   - Directory of the second text file
   - Delimiter if any exists (use [-f] followed by first delimiter and [-s] followed by second delimiter)
   - Output Directory (Leave blank to save in the program directory, use [-e] followed by export directory)
