@@ -150,7 +150,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                             array1.push_back(0);
                         }    
                     }
-                    sum(array1,array2,result);
+                    sum<<<1,1>>>(array1,array2,result);
                     return result;
 
         case '-':   VALID_OPERATION = true;
@@ -164,7 +164,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                             array1.push_back(0);
                         }    
                     }
-                    sub(array1,array2,result);
+                    sub<<<1,1>>>(array1,array2,result);
                     return result;
 
         case '*':   VALID_OPERATION = true;
@@ -178,7 +178,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                             array1.push_back(1);
                         }    
                     }
-                    mul(array1,array2,result);
+                    mul<<<1,1>>>(array1,array2,result);
                     return result;
 
         case '/':   VALID_OPERATION = true;
@@ -192,7 +192,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                             array1.push_back(1);
                         }    
                     }
-                    div(array1,array2,result);
+                    div<<<1,1>>>(array1,array2,result);
                     return result;
         
         default:    std::cout << "Invalid operator!" << "\n" << "Expected '+', '-', '*' or '/' " << "got " << operation << std::endl;
@@ -202,14 +202,14 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
 }
 
 
-
+__global__
 void sum(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result){
     for(int i=0; i<array1.size(); i++){
         result.push_back(array1[i]+array2[i]);
     }
 }
 
-
+__global__
 void sub(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result){
     for(int i=0; i<array1.size(); i++){
         result.push_back(array1[i]-array2[i]);
@@ -217,13 +217,13 @@ void sub(const std::vector<int> &array1,const std::vector<int> &array2, std::vec
 }
 
 
-
+__global__
 void mul(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result){
     for(int i=0; i<array1.size(); i++){
         result.push_back(array1[i]*array2[i]);
     }
 }
-
+__global__
 void div(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result){
     for(int i=0; i<array1.size(); i++){
         result.push_back(array1[i]/array2[i]);
