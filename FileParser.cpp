@@ -1,23 +1,4 @@
 
-/**
- * Asem: 
- * 1- The above paragraph is difficult to read. No need to upper case'ing it. (done)
- * */
-
-
-/**
- * 
- * 2- The includes can be better sorted and made in related groups, I fixed this. done by Eng.Asem
- * 3- Be strictly consistent in using spaces, for example: done by Eng.Asem
- * Do not:
- * #include<fstream>
- * #include <vector>
- * Instead:
- * #include <fstream>
- * #include <vector>
- * I fixed this.
- * */
-
 // STL
 #include <vector>
 #include <string>
@@ -32,21 +13,8 @@
 #include <fmt/format.h>
 
 
-/**
- * 4- Avoid opening namespaces global-wide.
- * You can instead open a namespace only within the function body, where you actually invoke the library. (done)
- * */
-
-
 
 // Functions
-
-/**
- * 11- A general rule for all of the functions in this file.
- * If you are receiving a container that you only read from, then receive it by constant reference (e.g const std::string &dictionary).
- * If you are receiving a container that you will modify, then receive it by reference (e.g std::string &dictionary).
- * By using references, you avoid the overhead of the unnecessary copying of data to a new container.
- * */
 
 std::vector<int> retrieveIntegers(const std::string &directory);
 std::vector<int> retrieveIntegers(const std::string &directory,const char &delimiter);
@@ -65,8 +33,8 @@ bool VALID_OPERATION = false;
 
 int main (int argc, char **argv){
     std::vector<int> arry1,arry2,results;
-    std::string dir1, dir2; // 6- Just a matter of taste, and to be consistent with the style at line 74.
-    std::string outDir = "results.txt"; // 7- Always better to declare and initialize at the same line, when possible. 
+    std::string dir1, dir2; 
+    std::string outDir = "results.txt"; 
     char delim1 = ' ';
     char delim2 = ' ';
     char oper;
@@ -137,14 +105,9 @@ std::vector<int> retrieveIntegers(const std::string &directory, const char &deli
 
 std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation){
 
-    /**
-     * 9- Here you better represent the operation with `char` type (e.g '+', '-', etc.) to 
-     * avoid the misspelling of words, or ideally, in big projects, using Enum Classes.
-     * By using `char` or Enums, here we optimally can use the switch-case statement that 
-     * provides a more readable logic. (done)
-     * */
+   
     switch (operation){
-        case '+':   VALID_OPERATION = true;
+        case 'p' :  VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
                         for (int i=0; i < (array1.size() - array2.size()); i++){
                             array2.push_back(0);
@@ -157,7 +120,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                     }
                     return sum(array1,array2);
 
-        case '-':   VALID_OPERATION = true;
+        case 's':   VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
                         for (int i=0; i < (array1.size() - array2.size()); i++){
                             array2.push_back(0);
@@ -170,7 +133,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                     }
                     return sub(array1,array2);
 
-        case '*':   VALID_OPERATION = true;
+        case 'm':   VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
                         for (int i=0; i < (array1.size() - array2.size()); i++){
                             array2.push_back(1);
@@ -183,7 +146,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                     }
                     return mul(array1,array2);
 
-        case '/':   VALID_OPERATION = true;
+        case 'd':   VALID_OPERATION = true;
                     if (array1.size() > array2.size()){
                         for (int i=0; i < (array1.size() - array2.size()); i++){
                             array2.push_back(1);
@@ -247,7 +210,6 @@ std::vector<int> div(const std::vector<int> &array1,const std::vector<int> &arra
 
 void streamOut(const std::vector<int> &results, const std::string &outDir){
     std::ofstream resultFile;
-    int x;
     resultFile.open(outDir);
     if (resultFile.is_open()){
         for(int i=0; i < results.size(); i++){
