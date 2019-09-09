@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
-#define SIZE	1024
+
 
 // Misc.
 #include <clara/clara.hpp>
@@ -21,45 +21,43 @@
 std::vector<int> retrieveIntegers(const std::string &directory);
 std::vector<int> retrieveIntegers(const std::string &directory,const char &delimiter);
 std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation);
-void sum(const std::vector<int> &array1, const std::vector<int> &array2, std::vector<int> &result);
-void sub(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result);
-void mul(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result);
-void div(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result);
+//void sum(const std::vector<int> &array1, const std::vector<int> &array2, std::vector<int> &result);
+//void sub(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result);
+//void mul(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result);
+//void div(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result);
 void streamOut(const std::vector<int> &results, const std::string &outDir);
 
-__global__
-void sum(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result){
+__global__ void sum(thrust::device_vector<int> &Dev_array1,thrust::device_vector<int> &Dev_array2, thrust::device_vector<int> &Dev_result, int n)
+{
     int i=threadIdx.x;
-
-    if (i < array1.size())
-        result.push_back(array1[i]+array2[i]);
+    if (i < n)
+        Dev_result.insert(Dev_result.begin()+i, Dev_array1[i]+ Dev_array2[i]);
     
 }
 
-__global__
-void sub(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result){
+__global__ void sub(thrust::device_vector<int> &Dev_array1,thrust::device_vector<int> &Dev_array2, thrust::device_vector<int> &Dev_result, int n)
+{
     int i=threadIdx.x;
-
-    if (i < array1.size())
-        result.push_back(array1[i]-array2[i]);
+    if (i < n)
+        Dev_result.insert(Dev_result.begin()+i, Dev_array1[i]- Dev_array2[i]);
     
 }
 
 
-__global__
-void mul(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result){
+__global__ void mul(thrust::device_vector<int> &Dev_array1,thrust::device_vector<int> &Dev_array2, thrust::device_vector<int> &Dev_result, int n )
+{
     int i=threadIdx.x;
-
-    if (i < array1.size())
-        result.push_back(array1[i]*array2[i]);
+    
+    if (i < n)
+        Dev_result.insert(Dev_result.begin()+i,Dev_array1[i]* Dev_array2[i]);
     
 }
-__global__
-void div(const std::vector<int> &array1,const std::vector<int> &array2, std::vector<int> &result){
+__global__ void div (thrust::device_vector<int> &Dev_array1,thrust::device_vector<int> &Dev_array2, thrust::device_vector<int> &Dev_result, int n)
+{
     int i=threadIdx.x;
 
-    if (i < array1.size())
-        result.push_back(array1[i]/array2[i]);
+    if (i < n)
+        Dev_result.insert(Dev_result.begin()+i, Dev_array1[i]/Dev_array2[i]);
     
 }
 
@@ -68,10 +66,10 @@ void div(const std::vector<int> &array1,const std::vector<int> &array2, std::vec
 bool VALID_OPERATION = false;
 
 int main (int argc, char **argv){
+  
     std::vector<int> arry1,arry2,results;
 
-        // to make the arrays accessable from both gpus and cpus
-    
+
     std::string dir1, dir2; 
     std::string outDir = "results.txt";
     char delim1 = ' ';
@@ -95,6 +93,7 @@ int main (int argc, char **argv){
         arry1 = retrieveIntegers(dir1,delim1);
         arry2 = retrieveIntegers(dir2,delim2);
         results = operation(arry1,arry2,oper);
+       
         
     
         if(VALID_OPERATION) {
@@ -140,9 +139,11 @@ std::vector<int> retrieveIntegers(const std::string &directory, const char &deli
 std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, const char &operation){
 
     std::vector<int> result;
-    cudaMallocManaged(&array1 , SIZE*sizeof(int));
-    cudaMallocManaged(&array2 , SIZE*sizeof(int));
-    cudaMallocManaged(&result , SIZE*sizeof(int));
+    thrust::device_vector<int> Dev_result(result);
+    thrust::device_vector<int> Dev_array1(array1) ;
+    thrust::device_vector<int> Dev_array2(array2);
+
+    
 
     switch (operation){
         case '+':   VALID_OPERATION = true;
@@ -156,7 +157,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                             array1.push_back(0);
                         }    
                     }
-                    sum<<<1,array1.size()>>>(array1,array2,result);
+                    sum<<<1,array1.size()>>>(Dev_array1,Dev_array2,Dev_result, array1.size());
                     return result;
 
         case '-':   VALID_OPERATION = true;
@@ -170,7 +171,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                             array1.push_back(0);
                         }    
                     }
-                    sub<<<1,array1.size()>>>(array1,array2,result);
+                    sub<<<1,array1.size()>>>(Dev_array1,Dev_array2,Dev_result,array1.size());
                     return result;
 
         case '*':   VALID_OPERATION = true;
@@ -184,7 +185,7 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                             array1.push_back(1);
                         }    
                     }
-                    mul<<<1,array1.size()>>>(array1,array2,result);
+                    mul<<<1,array1.size()>>>(Dev_array1,Dev_array2,Dev_result, array1.size());
                     return result;
 
         case '/':   VALID_OPERATION = true;
@@ -198,16 +199,13 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
                             array1.push_back(1);
                         }    
                     }
-                    div<<<1,array1.size()>>>(array1,array2,result);
+                    div<<<1,array1.size()>>>(Dev_array1,Dev_array2,Dev_result,array1.size());
                     return result;
         
         default:    std::cout << "Invalid operator!" << "\n" << "Expected '+', '-', '*' or '/' " << "got " << operation << std::endl;
                     std::vector<int> emptyVector;
                     return emptyVector;
     }
-    cudaFree (array1);
-    cudaFree (array2);
-    cudaFree (result);
 }
 
 
