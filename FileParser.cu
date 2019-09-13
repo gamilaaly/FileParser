@@ -7,16 +7,14 @@
 #include <algorithm>
 #include <stdio.h>
 #include <bits/stdc++.h>
-
 #define SIZE 1024
 using namespace std;
 // Misc.
 #include <clara/clara.hpp>
-//#include <fmt/format.h>
 
 //functions
 int *retrieveIntegers(const std::string &directory, const char &delimiter);
-int *operation(int *array1, int *array2, const char &operation);
+int *operation(int *array1, int *array2, int *results, const char &operation);
 void streamOut(int *results, const std::string &outDir);
 
 __global__ void sum(int *array1, int *array2, int *results)
@@ -25,7 +23,6 @@ __global__ void sum(int *array1, int *array2, int *results)
     int i=threadIdx.x;
     if (i <SIZE)    {
         results[i] = array1[i] + array2[i];
-
     
     }
 }
@@ -84,7 +81,7 @@ int main(int argc, char **argv)
 
         arry1 = retrieveIntegers(dir1, delim1);
         arry2 = retrieveIntegers(dir2, delim2);
-        results = operation(&arry1[0], &arry2[0], oper);
+        results = operation(&arry1[0], &arry2[0],&results[0],oper);
         
         if (VALID_OPERATION)
         {
@@ -134,11 +131,8 @@ int *retrieveIntegers(const std::string &directory, const char &delimiter)
     return arryint;
 }
 
-int *operation(int *array1, int *array2, const char &operation)
+int *operation(int *array1, int *array2, int *result, const char &operation)
 {
-    int *result ;
-    cudaMallocManaged(&result , SIZE*sizeof(int));
-
 
     switch (operation)
     {
@@ -174,15 +168,14 @@ int *operation(int *array1, int *array2, const char &operation)
             return result;
             
         }
-        cudaFree(result);
+    
 
     default:
         std::cout << "Invalid operator!"
                   << "\n"
                   << "Expected '+', '-', '*' or '/' "
                   << "got " << operation << std::endl;
-        int *emptyArray;
-
+        int *emptyArray= (int *)malloc( SIZE * sizeof(int));
         return emptyArray;
     }
 
