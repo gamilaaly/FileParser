@@ -36,3 +36,12 @@
   - sudo mkdir /usr/local/include/clara
   - sudo cp Clara/include/clara.* /usr/local/include/clara/
   - sudo cp Clara/include/clara_textflow.* /usr/local/include/clara/
+
+## cMake
+- You need to install the CMake program, using the following command:
+   - sudo apt-get install cmake
+- To build the program:
+   - mkdir build
+   - cd build
+   - cmake ..
+   - make
