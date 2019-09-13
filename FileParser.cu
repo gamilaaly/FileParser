@@ -81,23 +81,14 @@ int main(int argc, char **argv)
         cudaMallocManaged(&arry1 , SIZE*sizeof(int));
         cudaMallocManaged(&arry2 , SIZE*sizeof(int));
         cudaMallocManaged(&results, SIZE*sizeof(int));
-       // int *arry1 = (int *)malloc(SIZE * sizeof(int));
-        //int *arry2 = (int *)malloc(SIZE * sizeof(int));
-        //int *results = (int *)malloc(SIZE * sizeof(int));
 
         arry1 = retrieveIntegers(dir1, delim1);
         arry2 = retrieveIntegers(dir2, delim2);
         results = operation(&arry1[0], &arry2[0], oper);
-        //cudaMallocManaged(&a , SIZE*sizeof(int));
-        //cudaMallocManaged(&b , SIZE*sizeof(int));
-        //cudaMallocManaged(&c , SIZE*sizeof(int));
-        // Get starting point exact time
         
         if (VALID_OPERATION)
         {
             streamOut(&results[0], outDir);
-    //        std::cout << "Execution time: " << duration.count() << "ms" << "\n";
-
         }
         cudaFree(arry1);
         cudaFree(arry2);
@@ -113,12 +104,11 @@ int *retrieveIntegers(const std::string &directory, const char &delimiter)
     std::string temp;
 
     std::vector<std::string> arry;
-    //string *a = (string *)malloc(SIZE * sizeof(string));
-    //int *arryint = (int *)malloc(SIZE * sizeof(int));
     int *arryint;
     string *a;
     cudaMallocManaged(&arryint , SIZE*sizeof(int));
     cudaMallocManaged(&a , SIZE*sizeof(string));
+   
     file.open(directory);
     if (file.is_open())
     {
@@ -184,7 +174,7 @@ int *operation(int *array1, int *array2, const char &operation)
             return result;
             
         }
-      //  cudaFree(result);
+        cudaFree(result);
 
     default:
         std::cout << "Invalid operator!"
