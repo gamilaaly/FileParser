@@ -10,7 +10,7 @@
 
 // Misc.
 #include <clara/clara.hpp>
-#include <fmt/format.h>
+//#include <fmt/format.h>
 
 // Functions
 
@@ -66,8 +66,8 @@ int main(int argc, char **argv)
         {
 
             // streamOut(results,outDir);
-            fmt::print("Execution time {}\n ", duration.count());
-            //  std::cout << "Execution time: " << duration.count() << "ms" << "\n";
+          //  fmt::print("Execution time {}\n ", duration.count());
+             std::cout << "Execution time: " << duration.count() << "ms" << "\n";
         }
     }
     return 0;
@@ -186,9 +186,9 @@ std::vector<int> operation(std::vector<int> &array1, std::vector<int> &array2, c
         return div(array1, array2);
 
     default:
-        fmt::print("Invalid operator! Expected {0}, {1}, {2} or {3} got {4} \n ", '+', '-', '*', '/', operation);
+        //fmt::print("Invalid operator! Expected {0}, {1}, {2} or {3} got {4} \n ", '+', '-', '*', '/', operation);
 
-        // std::cout << "Invalid operator!" << "\n" << "Expected '+', '-', '*' or '/' " << "got " << operation << std::endl;
+        std::cout << "Invalid operator!" << "\n" << "Expected '+', '-', '*' or '/' " << "got " << operation << std::endl;
     }
 }
 
@@ -252,8 +252,8 @@ void streamOut(const std::vector<int> &results, const std::string &outDir)
     }
     else
     {
-        fmt::print("{}", "Unable to open file");
+        //fmt::print("{}", "Unable to open file");
 
-        //  std::cout << "Unable to open file";
+        std::cout << "Unable to open file";
     }
 }
